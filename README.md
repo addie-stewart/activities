@@ -1,5 +1,5 @@
 # Activities
-Performs formatting operation on csv containing activities and campers
+Performs formatting operations on csv containing activities and campers
 
 Instructions for use:
 Download activities spreadsheet as csv and save in same folder as activities.py

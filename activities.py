@@ -16,9 +16,12 @@ def read_csv(filename):
 
     with open(filename, 'r') as activities:
         reader = csv.reader(activities)
-
+        header = []
+        cabin = ''
         for row in reader:
-            if 'Period' in row[0]: # this is the header row with Period in first column and names in other columns, ex: {Period, Mary, John, ...}
+            if row[0] and not row[1]: # this is a cabin title
+                cabin = row[0]
+            elif 'Period' in row[0]: # this is the header row with Period in first column and names in other columns, ex: {Period, Mary, John, ...}
                 header = row
             elif row:
                 if row[0] in periods: # this row contains a valid period, ex: {1, Extreme Combo, Horse Lovers, ...}
@@ -28,10 +31,11 @@ def read_csv(filename):
                         if camper_index > 0 and camper: # do not include first column header (Period) or blanks
                             activity = row[camper_index]
                             period_str = str(period)
+                            camper_str = camper + ' (' + cabin + ')'
                             if activity in periods[period]:
-                                periods[period_str][activity].append(camper)
+                                periods[period_str][activity].append(camper_str)
                             else:
-                                periods[period_str][activity] = [camper]
+                                periods[period_str][activity] = [camper_str]
                         camper_index += 1
     return periods
 
@@ -72,9 +76,29 @@ def write_csv(filename, activities):
     file.close()
 
 """
+Creates a text file with lists of periods, activities, campers
+Inputs: name of new file to be created, dictionary of periods of activities of campers
+"""
+def write_txt(filename, periods):
+    file = open(filename, 'w')
+
+    period = 1
+    while period <= len(periods):
+        period_str = str(period)
+        if periods[period_str]:
+            file.write('Period ' + period_str + '\n')
+            for activity in periods[period_str]:
+                file.write(activity + '\n')
+                file.write(str(periods[period_str][activity]) + '\n')
+        file.write('\n')
+        period += 1
+    file.close()
+
+"""
 Main script
-Creates new file for each period
+Creates text file containing lists of campers for each period/activity and a new csv file for each period
 """
 periods = read_csv(original_file_name)
+write_txt('activities.txt', periods)
 for period in periods:
     write_csv('period_' + str(period) + '_activities.csv', periods[period])
