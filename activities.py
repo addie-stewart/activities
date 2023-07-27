@@ -32,7 +32,7 @@ def read_csv(filename):
                             activity = row[camper_index]
                             period_str = str(period)
                             camper_str = camper + ' (' + cabin + ')'
-                            if activity in periods[period]:
+                            if activity in periods[period]: 
                                 periods[period_str][activity].append(camper_str)
                             else:
                                 periods[period_str][activity] = [camper_str]
@@ -46,7 +46,7 @@ def safe_get_camper(campers, index):
     try:
         return campers[index]
     except IndexError:
-            return ''
+        return ''
 
 """
 Creates a new csv file with activities as column headers and rows containing campers in those activities
@@ -86,10 +86,11 @@ def write_txt(filename, periods):
     while period <= len(periods):
         period_str = str(period)
         if periods[period_str]:
-            file.write('Period ' + period_str + '\n')
+            file.write('PERIOD ' + period_str + '\n-------------------------------\n')
             for activity in periods[period_str]:
                 file.write(activity + '\n')
-                file.write(str(periods[period_str][activity]) + '\n')
+                file.write('\n'.join(periods[period_str][activity]))
+                file.write('\n\n')
         file.write('\n')
         period += 1
     file.close()
