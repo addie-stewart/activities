@@ -13,7 +13,6 @@ periods = {
 """
 def read_csv(filename):
     periods = {'1': {}, '2': {}, '3': {}, '4': {}}
-
     with open(filename, 'r') as activities:
         reader = csv.reader(activities)
         header = []
@@ -37,13 +36,11 @@ def read_csv(filename):
                             else:
                                 periods[period_str][activity] = [camper_str]
                         camper_index += 1
-        for period in periods:
-            for activity in periods[period]:
-                if not ' - ' in activity: # add activity camper count
-                    new_activity_key_name = activity + ' - ' + str(len(periods[period][activity]))
-                    periods[period][new_activity_key_name] = periods[period][activity]
-                    del periods[period][activity]
-    return periods
+    new_periods = {'1': {}, '2': {}, '3': {}, '4': {}}
+    for period in periods:
+        for activity in periods[period]:
+            new_periods[period][activity + ' - ' + str(len(periods[period][activity]))] = periods[period][activity]
+    return new_periods
 
 """
 Returns: Camper in list of campers by index. If camper at that index does not exist, returns empty string
@@ -66,9 +63,10 @@ def write_csv(filename, activities):
     # get max campers for a single activity so we know how many rows csv must contain
     max_campers = 0 
     for activity in activities:
-        if len(activities[activity]) > max_campers:
-            max_campers = len(activities[activity])
-    
+        number_of_campers_in_activity = len(activities[activity])
+        if number_of_campers_in_activity > max_campers:
+            max_campers = number_of_campers_in_activity
+
     # create new row with campers corresponding to activity in header row
     row_index = 0
     while row_index < max_campers:
