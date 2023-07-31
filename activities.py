@@ -37,6 +37,12 @@ def read_csv(filename):
                             else:
                                 periods[period_str][activity] = [camper_str]
                         camper_index += 1
+        for period in periods:
+            for activity in periods[period]:
+                if not ' - ' in activity: # add activity camper count
+                    new_activity_key_name = activity + ' - ' + str(len(periods[period][activity]))
+                    periods[period][new_activity_key_name] = periods[period][activity]
+                    del periods[period][activity]
     return periods
 
 """
